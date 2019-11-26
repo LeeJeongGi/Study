@@ -255,6 +255,56 @@ int main()
 	_tagItem	tStoreArmor[STORE_ARMOR_MAX] = {};
 
 	//각 아이템 정보들을 설정해준다.
+	strcpy_s(tStoreWeapon[0].strName, "목검");
+	strcpy_s(tStoreWeapon[0].strTypeName, "무기");
+	tStoreWeapon[0].iMin = 5;
+	tStoreWeapon[0].iMax = 10;
+	tStoreWeapon[0].iPrice = 1000;
+	tStoreWeapon[0].iSell = 500;
+	strcpy_s(tStoreWeapon[0].strDesc, "나무로 만든 칼");
+
+	strcpy_s(tStoreWeapon[1].strName, "장궁");
+	strcpy_s(tStoreWeapon[1].strTypeName, "무기");
+	tStoreWeapon[1].iMin = 20;
+	tStoreWeapon[1].iMax = 40;
+	tStoreWeapon[1].iPrice = 7000;
+	tStoreWeapon[1].iSell = 3500;
+	strcpy_s(tStoreWeapon[1].strDesc, "짱짱한 활");
+
+	strcpy_s(tStoreWeapon[2].strName, "지팡이");
+	strcpy_s(tStoreWeapon[2].strTypeName, "무기");
+	tStoreWeapon[2].iMin = 90;
+	tStoreWeapon[2].iMax = 150;
+	tStoreWeapon[2].iPrice = 30000;
+	tStoreWeapon[2].iSell = 15000;
+	strcpy_s(tStoreWeapon[2].strDesc, "나무로 만든 칼");
+
+	//방어구.
+	strcpy_s(tStoreArmor[0].strName, "천갑옷");
+	strcpy_s(tStoreArmor[0].strTypeName, "방어구");
+	tStoreArmor[0].iMin = 2;
+	tStoreArmor[0].iMax = 5;
+	tStoreArmor[0].iPrice = 1000;
+	tStoreArmor[0].iSell = 500;
+	strcpy_s(tStoreArmor[0].strDesc, "천으로 만든 쓸모없는 갑옷");
+
+	strcpy_s(tStoreArmor[1].strName, "가죽갑옷");
+	strcpy_s(tStoreArmor[1].strTypeName, "방어구");
+	tStoreArmor[1].iMin = 10;
+	tStoreArmor[1].iMax = 20;
+	tStoreArmor[1].iPrice = 7000;
+	tStoreArmor[1].iSell = 3500;
+	strcpy_s(tStoreArmor[1].strDesc, "가죽으로 만든 쓸모없는 갑옷");
+
+	strcpy_s(tStoreArmor[2].strName, "쇠갑옷");
+	strcpy_s(tStoreArmor[2].strTypeName, "방어구");
+	tStoreArmor[2].iMin = 50;
+	tStoreArmor[2].iMax = 90;
+	tStoreArmor[2].iPrice = 30000;
+	tStoreArmor[2].iSell = 15000;
+	strcpy_s(tStoreArmor[2].strDesc, "쇠로 만든 쓸모없는 갑옷");
+
+
 
 
 	while (true)
@@ -669,7 +719,7 @@ int main()
 
 			cout << "보유골드 : " << tPlayer.tInventory.iGold << "GOLD " << endl << endl;
 
-			for (int i = 0; tPlayer.tInventory.iItemCount; ++i)
+			for (int i = 0; i < tPlayer.tInventory.iItemCount; ++i)
 			{
 				cout << i + 1 << ".이름: " << tPlayer.tInventory.tItem[i].strName <<
 					"\t종류 :" << tPlayer.tInventory.tItem[i].strTypeName << endl;
