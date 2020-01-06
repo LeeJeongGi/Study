@@ -3,6 +3,14 @@
 #include<algorithm>
 using namespace std;
 
+enum GAME_MODE
+{
+	GM_NONE,
+	GM_NEW,
+	GM_LOAD,
+	GM_END
+};
+
 enum MAIN_MENU
 {
 	MM_NONE,
@@ -500,6 +508,9 @@ int SelectJob()
 
 void SetPlayer(_tagPlayer* pPlayer)
 {
+	system("cls");
+	cin.clear();
+	cin.ignore(1024, '\n');
 
 	//플레이어 이름 입력받는다.
 	cout << "이름 : ";
@@ -546,6 +557,139 @@ void SetPlayer(_tagPlayer* pPlayer)
 		pPlayer->iMPMax = 300;
 		break;
 	}
+}
+
+bool LoadPlayer(_tagPlayer *pPlayer)
+{
+	FILE* pFile = NULL;
+
+	fopen_s(&pFile, "Player.ply", "rb");
+	if (pFile)
+	{
+		//플레이어 이름을 읽어온다.
+		fread(pPlayer->strName, 1, NAME_SIZE, pFile);
+
+		//직업 정보를 읽어온다
+		fread(&pPlayer->eJob, sizeof(JOB), 1, pFile);
+		fread(&pPlayer->strJobName, 1, NAME_SIZE, pFile);
+
+		//공격력을 읽어온다.
+		fread(&pPlayer->iAttackMin, 4, 1, pFile);
+		fread(&pPlayer->iAttackMax, 4, 1, pFile);
+
+		//방어력을 읽어온다.
+		fread(&pPlayer->iArmorMin, 4, 1, pFile);
+		fread(&pPlayer->iArmorMax, 4, 1, pFile);
+
+		//체력을 읽어온다.
+		fread(&pPlayer->iHP, 4, 1, pFile);
+		fread(&pPlayer->iHPMax, 4, 1, pFile);
+
+		//마나를 읽어온다.
+		fread(&pPlayer->iMP, 4, 1, pFile);
+		fread(&pPlayer->iMPMax, 4, 1, pFile);
+
+		//경험치와 레벨을 읽어온다.
+		fread(&pPlayer->iExp, 4, 1, pFile);
+		fread(&pPlayer->iLevel, 4, 1, pFile);
+
+		//무기아이템 착용여부를 읽어온다.
+		fread(&pPlayer->bEquip[EQ_WEAPON], 1, 1, pFile);
+
+		//만야 저장할때 무기를 차고 있었다면 해당 무기정보도
+		//같이 저장이 되었다. 그러므로 여기서 차고 있을 경우
+		//읽어야한다
+		if (pPlayer->bEquip[EQ_WEAPON])
+			fread(&pPlayer->bEquip[EQ_WEAPON], sizeof(_tagItem), 1, pFile);
+
+		//방어구아이템도 착용여부를 읽어온다.
+		fread(&pPlayer->bEquip[EQ_ARMOR], 1, 1, pFile);
+
+		if (pPlayer->bEquip[EQ_ARMOR])
+			fread(&pPlayer->bEquip[EQ_ARMOR], sizeof(_tagItem), 1, pFile);
+
+		//골드를 읽어온다.
+		fread(&pPlayer->tInventory.iGold, 4, 1, pFile);
+
+		//인벤토리 아이템 수를 읽어온다.
+		fread(&pPlayer->tInventory.iItemCount, 4, 1, pFile);
+
+		//읽어온 아이템 수만큼 인벤토리에 아이템정보를 읽어온다.
+		fread(pPlayer->tInventory.tItem, sizeof(_tagItem),
+			pPlayer->tInventory.iItemCount, pFile);
+
+		fclose(pFile);
+		return true;
+	}
+	return false;
+}
+//bool을 이용해서 파일이 제대로 만들어졌는지 판단한다.
+bool SavePlayer(_tagPlayer* pPlayer)
+{
+	FILE* pFile = NULL;
+
+	fopen_s(&pFile, "Player.ply", "wb");
+
+	if (pFile)
+	{
+		//플레이어 이름을 저장한다.
+		fwrite(pPlayer->strName, 1, NAME_SIZE, pFile);
+
+		//직업 정보를 저장한다
+		fwrite(&pPlayer->eJob, sizeof(JOB), 1, pFile);
+		fwrite(&pPlayer->strJobName, 1, NAME_SIZE, pFile);
+
+		//공격력을 저장한다.
+		fwrite(&pPlayer->iAttackMin, 4, 1, pFile);
+		fwrite(&pPlayer->iAttackMax, 4, 1, pFile);
+
+		//방어력을 저장한다.
+		fwrite(&pPlayer->iArmorMin, 4, 1, pFile);
+		fwrite(&pPlayer->iArmorMax, 4, 1, pFile);
+
+		//체력을 저장한다.
+		fwrite(&pPlayer->iHP, 4, 1, pFile);
+		fwrite(&pPlayer->iHPMax, 4, 1, pFile);
+
+		//마나를 저장한다.
+		fwrite(&pPlayer->iMP, 4, 1, pFile);
+		fwrite(&pPlayer->iMPMax, 4, 1, pFile);
+
+		//경험치와 레벨을 저장한다.
+		fwrite(&pPlayer->iExp, 4, 1, pFile);
+		fwrite(&pPlayer->iLevel, 4, 1, pFile);
+
+		//무기아이템 착용여부를 저장한다.
+		fwrite(&pPlayer->bEquip[EQ_WEAPON], 1, 1, pFile);
+
+		//만야 저장할때 무기를 차고 있었다면 해당 무기정보도
+		//같이 저장이 되었다. 그러므로 여기서 차고 있을 경우
+		//읽어야한다
+		if (pPlayer->bEquip[EQ_WEAPON])
+			fwrite(&pPlayer->bEquip[EQ_WEAPON], sizeof(_tagItem), 1, pFile);
+
+		//방어구아이템도 착용여부를 저장한다.
+		fwrite(&pPlayer->bEquip[EQ_ARMOR], 1, 1, pFile);
+
+		if (pPlayer->bEquip[EQ_ARMOR])
+			fwrite(&pPlayer->bEquip[EQ_ARMOR], sizeof(_tagItem), 1, pFile);
+
+		//골드를 저장한다.
+		fwrite(&pPlayer->tInventory.iGold, 4, 1, pFile);
+
+		//인벤토리 아이템 수를 저장한다.
+		fwrite(&pPlayer->tInventory.iItemCount, 4, 1, pFile);
+
+		//읽어온 아이템 수만큼 인벤토리에 아이템정보를 저장한다.
+		fwrite(pPlayer->tInventory.tItem, sizeof(_tagItem),
+			pPlayer->tInventory.iItemCount, pFile);
+
+
+		fclose(pFile);
+		return true;
+	}
+
+	return true;
 }
 
 _tagMonster CreateMonster(const char* pName, int iAttackMin, int iAttackmax, int iArmorMin,
@@ -851,8 +995,33 @@ int main()
 	//게임을 시작할때 플레이어 정보를 설정하게 한다.
 	_tagPlayer	tPlayer = {};
 
-	//플레이어의 정보를 정의한다.
-	SetPlayer(&tPlayer);
+	int iGameMode = 0;
+	while (iGameMode <= GM_NONE || iGameMode > GM_END)
+	{
+		system("cls");
+		cout << "1.새로하기 " << endl;
+		cout << "2.이어하기 " << endl;
+		cout << "3.종료 " << endl;
+		cout << "게임모드를 선택하세요 : ";
+		iGameMode = InputInt();
+	}
+	if (iGameMode == GM_END)
+		return 0;
+
+	switch (iGameMode)
+	{
+	case GM_NEW:
+		SetPlayer(&tPlayer);
+		break;
+	case GM_LOAD:
+		//false에 !을 붙이면 ture가 된다.
+		if (!LoadPlayer(&tPlayer))
+		{
+			cout << "플레이어 파일 오류 !!" << endl;
+			return 0;
+		}
+		break;
+	}
 
 	//몬스터를 생성한다.
 	_tagMonster tMonsterArr[MT_BACK - 1] = {};
@@ -899,7 +1068,7 @@ int main()
 			break;
 		}
 	}
-
+	SavePlayer(&tPlayer);
 
 	return 0;
 }
