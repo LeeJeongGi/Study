@@ -716,10 +716,20 @@ _tagMonster CreateMonster(const char* pName, int iAttackMin, int iAttackmax, int
 
 void SetMonster(_tagMonster* pMonsterArr)
 {
-	pMonsterArr[0] = CreateMonster("고블린", 20, 30, 2, 5, 100, 10, 1, 1000, 500, 1500);
+	FILE* pFile = NULL;
+
+	fopen_s(&pFile, "Monster.mst", "rb");
+	if (pFile)
+	{
+		fread(pMonsterArr, sizeof(_tagMonster), MT_BACK - 1, pFile);
+
+		fclose(pFile);
+	}
+
+	/*pMonsterArr[0] = CreateMonster("고블린", 20, 30, 2, 5, 100, 10, 1, 1000, 500, 1500);
 	pMonsterArr[1] = CreateMonster("트롤", 80, 130, 60, 90, 2000, 100, 5, 7000, 6000, 8000);
 	pMonsterArr[2] = CreateMonster("고블린", 250, 500, 200, 400, 30000, 20000,
-		10, 30000, 20000, 50000);
+		10, 30000, 20000, 50000);*/
 }
 
 _tagLevelUpStatus CreateLvUpStatus(int iAttackMin, int iAttackMax, int iArmorMin,
@@ -988,6 +998,22 @@ void RunInventory(_tagPlayer* pPlayer)
 	}
 }
 
+bool LoadStore(_tagItem* pWeapon, _tagItem* pArmor)
+{
+	FILE* pFile = NULL;
+
+	fopen_s(&pFile, "Store.str", "rb");
+	if (pFile)
+	{
+		fread(pWeapon, sizeof(_tagItem), STORE_WEAPON_MAX, pFile);
+		fread(pArmor, sizeof(_tagItem), STORE_ARMOR_MAX, pFile);
+
+		fclose(pFile);
+		return true;
+	}
+	return true;
+}
+
 int main()
 {
 	srand((unsigned int)time(0));
@@ -1036,7 +1062,7 @@ int main()
 	_tagItem	tStoreWeapon[STORE_WEAPON_MAX] = {};
 	_tagItem	tStoreArmor[STORE_ARMOR_MAX] = {};
 
-	tStoreWeapon[0] = CreateItem("목검", IT_WEAPON, 5, 10, 1000, 500, "나무로 만든 칼");
+	/*tStoreWeapon[0] = CreateItem("목검", IT_WEAPON, 5, 10, 1000, 500, "나무로 만든 칼");
 	tStoreWeapon[1] = CreateItem("장궁", IT_WEAPON, 20, 10, 7000, 3500, "짱짱한 활");
 	tStoreWeapon[2] = CreateItem("지팡이", IT_WEAPON, 90, 150, 30000, 15000,
 		"나무로 만든 지팡이");
@@ -1046,7 +1072,8 @@ int main()
 	tStoreArmor[1] = CreateItem("가죽갑옷", IT_ARMOR, 10, 20, 7000, 3500,
 		"가죽으로 만든 허접한 갑옷");
 	tStoreArmor[2] = CreateItem("풀플레이트아머", IT_ARMOR, 70, 90, 30000, 15000,
-		"강철로 만든 허접한 갑옷");
+		"강철로 만든 허접한 갑옷");*/
+	LoadStore(tStoreWeapon, tStoreArmor);
 
 	bool bLoop = true;
 
